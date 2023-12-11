@@ -2,6 +2,7 @@ connection: "tp"
 
 # include all the views
 include: "/views/**/*.view.lkml"
+include: "/dashboards/*.dashboard"
 
 datagroup: tp_default_datagroup {
   # sql_trigger: SELECT MAX(id) FROM etl_log;;
