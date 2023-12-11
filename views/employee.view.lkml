@@ -101,25 +101,30 @@ view: employee {
   }
   measure: count {
     type: count
-    drill_fields: [detail*]
+    # drill_fields: [detail*]
+    # sql: "link" ;;
+    # link: {
+    #   label: "Look this event in chronicle"
+    #   url: "https://www.google.com/"
+    # }
   }
 
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
-	employee_id,
-	username,
-	company_name,
-	employee_name,
-	role.id,
-	role.name,
-	hrms_business_unit.id,
-	designation.designation_name,
-	designation.id,
-	team.count,
-	teammate.count,
-	worklog.count
-	]
+  employee_id,
+  username,
+  company_name,
+  employee_name,
+  role.id,
+  role.name,
+  hrms_business_unit.id,
+  designation.designation_name,
+  designation.id,
+  team.count,
+  teammate.count,
+  worklog.count
+  ]
   }
 
 }

@@ -16,11 +16,13 @@ explore: alembic_version {}
 
 explore: allocation_role {}
 
-explore: allocation_type {}
+explore: allocation_type {
+
+}
 
 explore: auxiliary_allocation {
   join: project {
-    type: left_outer 
+    type: left_outer
     sql_on: ${auxiliary_allocation.project_id} = ${project.id} ;;
     relationship: many_to_one
   }
@@ -30,7 +32,7 @@ explore: base_location_code {}
 
 explore: bd {
   join: customer {
-    type: left_outer 
+    type: left_outer
     sql_on: ${bd.customer_id} = ${customer.id} ;;
     relationship: many_to_one
   }
@@ -38,13 +40,13 @@ explore: bd {
 
 explore: bu_pmo {
   join: pmo {
-    type: left_outer 
+    type: left_outer
     sql_on: ${bu_pmo.pmo_id} = ${pmo.id} ;;
     relationship: many_to_one
   }
 
   join: jira_business_unit {
-    type: left_outer 
+    type: left_outer
     sql_on: ${pmo.jira_business_unit_id} = ${jira_business_unit.id} ;;
     relationship: many_to_one
   }
@@ -58,13 +60,13 @@ explore: dashboard {}
 
 explore: dashboard_graph {
   join: dashboard {
-    type: left_outer 
+    type: left_outer
     sql_on: ${dashboard_graph.dashboard_id} = ${dashboard.id} ;;
     relationship: many_to_one
   }
 
   join: graph {
-    type: left_outer 
+    type: left_outer
     sql_on: ${dashboard_graph.graph_id} = ${graph.id} ;;
     relationship: many_to_one
   }
@@ -76,20 +78,25 @@ explore: email_templates {}
 
 explore: employee {
   join: role {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.role_id} = ${role.id} ;;
     relationship: many_to_one
   }
 
   join: hrms_business_unit {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.hrms_business_unit_id} = ${hrms_business_unit.id} ;;
     relationship: many_to_one
   }
 
   join: designation {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.designation_id} = ${designation.id} ;;
+    relationship: many_to_one
+  }
+  join: grade {
+    type: left_outer
+    sql_on: ${employee.grade} = ${grade.id};;
     relationship: many_to_one
   }
 }
@@ -98,13 +105,19 @@ explore: grade {}
 
 explore: graph {}
 
-explore: hrms_business_unit {}
+explore: hrms_business_unit {
+  join: employee {
+    type: left_outer
+    sql_on: ${hrms_business_unit.id} = ${employee.hrms_business_unit_id} ;;
+    relationship: many_to_one
+  }
+}
 
 explore: jira_business_unit {}
 
 explore: learning_development {
   join: jira_business_unit {
-    type: left_outer 
+    type: left_outer
     sql_on: ${learning_development.jira_business_unit_id} = ${jira_business_unit.id} ;;
     relationship: many_to_one
   }
@@ -114,7 +127,7 @@ explore: location {}
 
 explore: milestones {
   join: contracts {
-    type: left_outer 
+    type: left_outer
     sql_on: ${milestones.contract_id} = ${contracts.id} ;;
     relationship: many_to_one
   }
@@ -124,7 +137,7 @@ explore: permission {}
 
 explore: pmo {
   join: jira_business_unit {
-    type: left_outer 
+    type: left_outer
     sql_on: ${pmo.jira_business_unit_id} = ${jira_business_unit.id} ;;
     relationship: many_to_one
   }
@@ -132,19 +145,19 @@ explore: pmo {
 
 explore: privilege {
   join: resource {
-    type: left_outer 
+    type: left_outer
     sql_on: ${privilege.resource_id} = ${resource.id} ;;
     relationship: many_to_one
   }
 
   join: role {
-    type: left_outer 
+    type: left_outer
     sql_on: ${privilege.role_id} = ${role.id} ;;
     relationship: many_to_one
   }
 
   join: permission {
-    type: left_outer 
+    type: left_outer
     sql_on: ${privilege.permission_id} = ${permission.id} ;;
     relationship: many_to_one
   }
@@ -156,13 +169,13 @@ explore: project_location {}
 
 explore: quarters {
   join: pmo {
-    type: left_outer 
+    type: left_outer
     sql_on: ${quarters.pmo_id} = ${pmo.id} ;;
     relationship: many_to_one
   }
 
   join: jira_business_unit {
-    type: left_outer 
+    type: left_outer
     sql_on: ${pmo.jira_business_unit_id} = ${jira_business_unit.id} ;;
     relationship: many_to_one
   }
@@ -170,7 +183,7 @@ explore: quarters {
 
 explore: request_criteria {
   join: allocation_role {
-    type: left_outer 
+    type: left_outer
     sql_on: ${request_criteria.allocation_role_id} = ${allocation_role.id} ;;
     relationship: many_to_one
   }
@@ -190,81 +203,86 @@ explore: sync_info {}
 
 explore: team {
   join: allocation_role {
-    type: left_outer 
+    type: left_outer
     sql_on: ${team.allocation_role_id} = ${allocation_role.id} ;;
     relationship: many_to_one
   }
 
   join: allocation_type {
-    type: left_outer 
+    type: left_outer
     sql_on: ${team.allocation_type_id} = ${allocation_type.id} ;;
     relationship: many_to_one
   }
 
   join: employee {
-    type: left_outer 
+    type: left_outer
     sql_on: ${team.employee_id} = ${employee.employee_id} ;;
     relationship: many_to_one
   }
 
   join: role {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.role_id} = ${role.id} ;;
     relationship: many_to_one
   }
 
   join: hrms_business_unit {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.hrms_business_unit_id} = ${hrms_business_unit.id} ;;
     relationship: many_to_one
   }
 
   join: designation {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.designation_id} = ${designation.id} ;;
+    relationship: many_to_one
+  }
+  join: project {
+    type: left_outer
+    sql_on: ${team.epic_id} = ${project.epic_id} ;;
     relationship: many_to_one
   }
 }
 
 explore: teammate {
   join: team {
-    type: left_outer 
+    type: left_outer
     sql_on: ${teammate.team_id} = ${team.id} ;;
     relationship: many_to_one
   }
 
   join: allocation_role {
-    type: left_outer 
+    type: left_outer
     sql_on: ${teammate.allocation_role_id} = ${allocation_role.id} ;;
     relationship: many_to_one
   }
 
   join: allocation_type {
-    type: left_outer 
+    type: left_outer
     sql_on: ${teammate.allocation_type_id} = ${allocation_type.id} ;;
     relationship: many_to_one
   }
 
   join: employee {
-    type: left_outer 
+    type: left_outer
     sql_on: ${teammate.employee_id} = ${employee.employee_id} ;;
     relationship: many_to_one
   }
 
   join: role {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.role_id} = ${role.id} ;;
     relationship: many_to_one
   }
 
   join: hrms_business_unit {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.hrms_business_unit_id} = ${hrms_business_unit.id} ;;
     relationship: many_to_one
   }
 
   join: designation {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.designation_id} = ${designation.id} ;;
     relationship: many_to_one
   }
@@ -276,25 +294,25 @@ explore: tp_config {}
 
 explore: worklog {
   join: employee {
-    type: left_outer 
+    type: left_outer
     sql_on: ${worklog.employee_id} = ${employee.employee_id} ;;
     relationship: many_to_one
   }
 
   join: role {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.role_id} = ${role.id} ;;
     relationship: many_to_one
   }
 
   join: hrms_business_unit {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.hrms_business_unit_id} = ${hrms_business_unit.id} ;;
     relationship: many_to_one
   }
 
   join: designation {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.designation_id} = ${designation.id} ;;
     relationship: many_to_one
   }
@@ -302,33 +320,37 @@ explore: worklog {
 
 explore: worklog_details {
   join: worklog {
-    type: left_outer 
+    type: left_outer
     sql_on: ${worklog_details.worklog_id} = ${worklog.id} ;;
     relationship: many_to_one
   }
 
   join: employee {
-    type: left_outer 
+    type: left_outer
     sql_on: ${worklog.employee_id} = ${employee.employee_id} ;;
     relationship: many_to_one
   }
 
   join: role {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.role_id} = ${role.id} ;;
     relationship: many_to_one
   }
 
   join: hrms_business_unit {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.hrms_business_unit_id} = ${hrms_business_unit.id} ;;
     relationship: many_to_one
   }
 
   join: designation {
-    type: left_outer 
+    type: left_outer
     sql_on: ${employee.designation_id} = ${designation.id} ;;
     relationship: many_to_one
   }
+  join: project {
+    type: left_outer
+    sql_on: ${worklog_details.epic_id} = ${project.id} ;;
+    relationship: many_to_one
+  }
 }
-
