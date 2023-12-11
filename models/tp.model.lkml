@@ -2,6 +2,7 @@ connection: "tp"
 
 # include all the views
 include: "/views/**/*.view.lkml"
+include: "/**/*.view.lkml"
 include: "/dashboards/*.dashboard"
 
 datagroup: tp_default_datagroup {
@@ -10,7 +11,7 @@ datagroup: tp_default_datagroup {
 }
 
 persist_with: tp_default_datagroup
-
+explore: ld_per_bu {}
 explore: activities {}
 
 explore: alembic_version {}
