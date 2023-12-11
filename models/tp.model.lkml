@@ -38,6 +38,11 @@ explore: bd {
     sql_on: ${bd.customer_id} = ${customer.id} ;;
     relationship: many_to_one
   }
+  join: project {
+    type: left_outer
+    sql_on: ${bd.jira_id} = ${project.id} ;;
+    relationship: many_to_one
+  }
 }
 
 explore: bu_pmo {
@@ -320,6 +325,8 @@ explore: worklog {
   }
 }
 
+# Project Over Run Calculations
+
 explore: worklog_details {
   join: worklog {
     type: left_outer
@@ -353,6 +360,21 @@ explore: worklog_details {
   join: project {
     type: left_outer
     sql_on: ${worklog_details.epic_id} = ${project.id} ;;
+    relationship: many_to_one
+  }
+  join: bd {
+    type: left_outer
+    sql_on: ${project.jira_id} = ${bd.jira_id} ;;
+    relationship: many_to_one
+  }
+  join: contracts {
+    type: left_outer
+    sql_on: ${project.jira_id} = ${contracts.jira_id} ;;
+    relationship: many_to_one
+  }
+  join: pmo {
+    type: left_outer
+    sql_on: ${project.jira_id} = ${pmo.jira_id} ;;
     relationship: many_to_one
   }
 }

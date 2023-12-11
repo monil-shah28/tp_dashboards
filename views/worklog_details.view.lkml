@@ -28,8 +28,36 @@ view: worklog_details {
     # hidden: yes
     sql: ${TABLE}."worklog_id" ;;
   }
+
+  dimension: is_estimated_hours_provided {
+    sql: CASE
+    WHEN ${pmo.estimated_hours} IS NULL
+    THEN 'false'
+    ELSE 'true'
+    END;;
+  }
+  dimension: estimated_hours_sum {
+    sql:${pmo.estimated_hours};;
+  }
+  dimension: worklog_hours_sum {
+    sql:${time_worked};;
+  }
+  measure: trye {
+    sql:
+    CASE
+    WHEN SUM(${pmo.estimated_hours}) <= SUM(${time_worked})
+    THEN 'Project run on Time'
+    ELSE 'Project OverRun'
+    END;;
+    drill_fields: [bd.status,project.project_name,employee.employee_name,contracts.contract_type]
+  }
+  measure: sum_of_time_worked {
+    type: sum
+    sql: ${time_worked};;
+  }
+
   measure: count {
     type: count
-    drill_fields: [id, worklog.id]
+    # drill_fields: [id, worklog.id]
   }
 }
