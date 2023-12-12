@@ -40,7 +40,17 @@ view: worklog_details {
     sql:${pmo.estimated_hours};;
   }
   dimension: worklog_hours_sum {
+    type: number
     sql:${time_worked};;
+  }
+  dimension: overrun {
+    sql: CASE
+    WHEN ${estimated_hours_sum} IS NULL
+    THEN 'NO estimation Provided.'
+    WHEN ${estimated_hours_sum} < ${project.logged_hours}
+    THEN 'OverRun'
+    ELSE 'Running ON Time'
+    END;;
   }
   measure: trye {
     sql:
@@ -50,6 +60,10 @@ view: worklog_details {
     ELSE 'Project OverRun'
     END;;
     drill_fields: [bd.status,project.project_name,employee.employee_name,contracts.contract_type]
+  }
+  measure: sum_of_estimated_hours {
+    type: sum
+    sql: ${estimated_hours_sum} ;;
   }
   measure: sum_of_time_worked {
     type: sum

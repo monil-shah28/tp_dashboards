@@ -100,13 +100,14 @@ view: employee {
     sql: ${TABLE}."username" ;;
   }
   measure: count {
-    type: count
-    # drill_fields: [detail*]
-    # sql: "link" ;;
-    # link: {
-    #   label: "Look this event in chronicle"
-    #   url: "https://www.google.com/"
-    # }
+    type: count_distinct
+    drill_fields: [detail*]
+    sql: "link" ;;
+    link: {
+      label: "Look this event in chronicle"
+      url: "https://www.google.com/"
+      # search?query={{employee.employee_name}}"
+    }
   }
 
   # ----- Sets of fields for drilling ------
