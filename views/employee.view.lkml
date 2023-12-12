@@ -100,9 +100,9 @@ view: employee {
     sql: ${TABLE}."username" ;;
   }
   measure: count {
-    type: count_distinct
+    type: count
     drill_fields: [detail*]
-    sql: "link" ;;
+    # sql: 'link' ;;
     link: {
       label: "Look this event in chronicle"
       url: "https://www.google.com/"
