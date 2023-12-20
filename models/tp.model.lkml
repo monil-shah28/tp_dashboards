@@ -11,7 +11,6 @@ datagroup: tp_default_datagroup {
 }
 
 persist_with: tp_default_datagroup
-explore: ld_per_bu {}
 explore: activities {}
 
 explore: alembic_version {}
