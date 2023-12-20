@@ -70,23 +70,66 @@ view: team {
     timeframes: [raw, time, date, week, month, quarter, year]
     sql: ${TABLE}."updated_on" ;;
   }
+  measure: billable {
+    type: count
+    filters: [
+      team.allocation_type_id: "1"
+    ]
+  }
+  measure: billable_buffer {
+    type: count
+    filters: [
+      team.allocation_type_id: "2"
+    ]
+  }
+  measure: buffer {
+    type: count
+    filters: [
+      team.allocation_type_id: "4"
+    ]
+  }
+  measure: LD {
+    type: count
+    filters: [
+      team.allocation_type_id: "11"
+    ]
+  }
   measure: count {
     type: count
     drill_fields: [detail*]
   }
-
+  measure: Billable_ratio {
+    type: number
+    sql:CAST(${billable} AS FLOAT) / CAST(${count} AS FLOAT) ;;
+    value_format: "0.00"
+  }
+  measure: Billable_buffer_ratio {
+    type: number
+    sql:CAST(${billable_buffer} AS FLOAT) / CAST(${count} AS FLOAT) ;;
+    value_format: "0.00"
+  }
+  measure: buffer_ratio {
+    type: number
+    sql:CAST(${buffer} AS FLOAT) / CAST(${count} AS FLOAT) ;;
+    value_format: "0.00"
+  }
+  measure: LD_ratio {
+    type: number
+    sql:CAST(${LD} AS FLOAT) / CAST(${count} AS FLOAT);;
+    value_format: "0.00"
+  }
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
-	id,
-	allocation_role.id,
-	allocation_type.id,
-	employee.username,
-	employee.employee_id,
-	employee.company_name,
-	employee.employee_name,
-	teammate.count
-	]
+  id,
+  allocation_role.id,
+  allocation_type.id,
+  employee.username,
+  employee.employee_id,
+  employee.company_name,
+  employee.employee_name,
+  teammate.count
+  ]
   }
 
 }
