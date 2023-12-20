@@ -275,7 +275,11 @@ explore: teammate {
     sql_on: ${teammate.employee_id} = ${employee.employee_id} ;;
     relationship: many_to_one
   }
-
+  join: project {
+    type: left_outer
+    sql_on: ${project.epic_id} = ${team.epic_id} ;;
+    relationship: many_to_one
+  }
   join: role {
     type: left_outer
     sql_on: ${employee.role_id} = ${role.id} ;;
