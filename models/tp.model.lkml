@@ -11,7 +11,6 @@ datagroup: tp_default_datagroup {
 }
 
 persist_with: tp_default_datagroup
-explore: ld_per_bu {}
 explore: activities {}
 
 explore: alembic_version {}
@@ -120,7 +119,31 @@ explore: hrms_business_unit {
   }
 }
 
-explore: jira_business_unit {}
+explore: jira_business_unit {
+  join: hrms_business_unit {
+    type: left_outer
+    sql_on: ${jira_business_unit.business_unit} = ${hrms_business_unit.short_form} ;;
+    relationship: many_to_one
+  }
+
+  join: pmo {
+    type: left_outer
+    sql_on: ${pmo.jira_business_unit_id} = ${jira_business_unit.id} ;;
+    relationship: many_to_one
+  }
+
+  join: project {
+    type: left_outer
+    sql_on: ${pmo.jira_id} = ${project.jira_id} ;;
+    relationship: many_to_one
+  }
+
+  join: employee {
+    type: left_outer
+    sql_on: ${employee.employee_id} = ${hrms_business_unit.bu_lead_id} ;;
+    relationship: many_to_one
+  }
+}
 
 explore: learning_development {
   join: jira_business_unit {
