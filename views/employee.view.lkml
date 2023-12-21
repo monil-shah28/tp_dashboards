@@ -102,11 +102,9 @@ view: employee {
   measure: count {
     type: count
     drill_fields: [detail*]
-    # sql: 'link' ;;
     link: {
       label: "Look this event in chronicle"
       url: "https://www.google.com/"
-      # search?query={{employee.employee_name}}"
     }
   }
 
@@ -114,17 +112,10 @@ view: employee {
   set: detail {
     fields: [
   employee_id,
-  username,
   company_name,
   employee_name,
-  role.id,
   role.name,
-  hrms_business_unit.id,
-  designation.designation_name,
-  designation.id,
-  team.count,
-  teammate.count,
-  worklog.count
+  designation.designation_name
   ]
   }
 
