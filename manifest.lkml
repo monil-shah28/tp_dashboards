@@ -8,9 +8,9 @@ project_name: "tp"
 # }
 
 visualization: {
-  id: "collapsible_tree"
+  id: "collapse"
   label: "Collapse"
-  file: "custom_viz/collapsible_tree.js"
+  file: "custom_viz/collapse.js"
   dependencies: [
     "https://code.jquery.com/jquery-2.2.4.min.js",
     "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js",
