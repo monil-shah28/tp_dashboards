@@ -8,43 +8,45 @@ const visObject = {
 
   updateAsync: function(data, element, config, queryResponse, details, doneRendering){
 
+        this.container.innerHTML = '';
         const outputData = {
             name: "root",
             children: []
         };
 
-        const uniqueBusinessUnits = [...new Set(data.map(item => item["hrms_business_unit.id"].value))];
+        const input_data = [...new Set(data.map(item => item[queryResponse.fields.dimension_like[0].name].value))];
 
-        uniqueBusinessUnits.forEach(businessUnitId => {
-            const businessUnitData = {
-                name: businessUnitId.toString(),
+        input_data.forEach(dataId => {
+            const input_unit_data = {
+                name: dataId.toString(),
                 children: []
             };
 
-            const employees = data.filter(item => item["hrms_business_unit.id"].value === businessUnitId);
+            const dimensions = data.filter(item => item[queryResponse.fields.dimension_like[0].name].value === dataId);
 
-            employees.forEach(employee => {
-                const employeeData = {
-                    name: employee["employee.employee_name"].value,
-                    children: [{ name: employee["employee.employee_id"].value.toString() }]
+            dimensions.forEach(main => {
+                const dimensions_data = {
+                    name: main[queryResponse.fields.dimension_like[1].name].value,
+                    children: [{ name: main[queryResponse.fields.dimension_like[2].name] }]
                 };
 
-                const managerId = employee["employee.direct_manager_id"].value;
-                const managerNode = businessUnitData.children.find(node => node.name === managerId.toString());
+                const mainId = main[queryResponse.fields.dimension_like[3].name].value;
+                const mainNode = input_unit_data.children.find(node => node.name === mainId);
 
-                if (managerNode) {
-                    managerNode.children.push(employeeData);
+                if (mainNode) {
+                    mainNode.children.push(dimensions_data);
                 } else {
-                    businessUnitData.children.push({
-                        name: managerId.toString(),
-                        children: [employeeData]
+                    input_unit_data.children.push({
+                        name: mainId,
+                        children: [dimensions_data]
                     });
                 }
             });
 
-            outputData.children.push(businessUnitData);
+            outputData.children.push(input_unit_data);
         });
-        JSON.stringify(outputData, null, 4);
+
+        data = outputData;
 
         const margin = { top: 20, right: 90, bottom: 30, left: 90 };
         const width = 960;
@@ -60,7 +62,7 @@ const visObject = {
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        const root = d3.hierarchy(outputData);
+        const root = d3.hierarchy(data);
         root.x0 = height / 2;
         root.y0 = width / 2;
         root.children.forEach(collapse);
@@ -68,10 +70,12 @@ const visObject = {
         function collapse(d) {
           if (d.children) {
             d._children = d.children;
+            d._children.forEach(collapse);
             d.children = null;
-          } else {
+          } else if (d._children) {
             d.children = d._children;
-            d.children = null;
+            d.children.forEach(collapse);
+            d._children = null;
           }
         }
 
@@ -83,13 +87,11 @@ const visObject = {
           const links = treeData.descendants().slice(1);
 
           nodes.forEach(d => {
-              d.y = d.depth * 200;
-              d.x0 = d.x;
-              d.y0 = d.y;
+              d.y = d.depth * 180;
           });
 
           const node = svg.selectAll("g.node")
-            .outputData(nodes, d => d.id || (d.id = ++i));
+            .data(nodes, d => d.id || (d.id = ++i));
 
           const nodeEnter = node.enter().append("g")
             .attr("class", "node")
@@ -98,11 +100,8 @@ const visObject = {
             .attr("cursor", "pointer")
             .attr("pointer-events", "all");
 
-          nodeEnter.attr("class", "node")
-            .attr("r", 1e-6)
-            .attr("fill", "black");
-
           nodeEnter.append("circle")
+            .attr("r", 1e-6)
             .attr("fill", "black");
 
           nodeEnter.append("text")
@@ -110,7 +109,7 @@ const visObject = {
           .attr("dy", d => d.parent ? "1em" : "-1em")
           .attr("text-anchor", d => d.parent ? "end" : "start")
           .attr("x", d => d.parent ? -10 : 10)
-          .text(d => d.outputData.name);
+          .text(d => d.data.name);
 
           const nodeUpdate = node.merge(nodeEnter).transition().duration(duration)
             .attr("transform", d => `translate(${d.y},${d.x})`);
@@ -127,7 +126,7 @@ const visObject = {
 
           nodeExit.select("circle").attr("opacity", 1e-6);
 
-          const link = svg.selectAll("path.link").outputData(links, d => d.id);
+          const link = svg.selectAll("path.link").data(links, d => d.id);
 
           const linkEnter = link.enter().insert("path", "g")
             .attr("class", "link")
