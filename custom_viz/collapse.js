@@ -8,168 +8,165 @@ const visObject = {
 
   updateAsync: function(data, element, config, queryResponse, details, doneRendering){
 
-      function buildHierarchy(data, dimensions, index = 0) {
-        if (index === dimensions.length) {
-          return { name: "root", children: [] };
-        }
+        const outputData = {
+            name: "root",
+            children: []
+        };
 
-        const currentDimension = dimensions[index];
-        const uniqueValues = [...new Set(data.map(item => item[currentDimension].value))];
+        const uniqueBusinessUnits = [...new Set(data.map(item => item["hrms_business_unit.id"].value))];
 
-        const hierarchy = { name: currentDimension, children: [] };
+        uniqueBusinessUnits.forEach(businessUnitId => {
+            const businessUnitData = {
+                name: businessUnitId.toString(),
+                children: []
+            };
 
-        uniqueValues.forEach(value => {
-          const subData = data.filter(item => item[currentDimension].value === value);
-          const subHierarchy = buildHierarchy(subData, dimensions, index + 1);
+            const employees = data.filter(item => item["hrms_business_unit.id"].value === businessUnitId);
 
-          hierarchy.children.push({
-            name: value.toString(),
-            children: subHierarchy.children,
-          });
+            employees.forEach(employee => {
+                const employeeData = {
+                    name: employee["employee.employee_name"].value,
+                    children: [{ name: employee["employee.employee_id"].value.toString() }]
+                };
+
+                const managerId = employee["employee.direct_manager_id"].value;
+                const managerNode = businessUnitData.children.find(node => node.name === managerId.toString());
+
+                if (managerNode) {
+                    managerNode.children.push(employeeData);
+                } else {
+                    businessUnitData.children.push({
+                        name: managerId.toString(),
+                        children: [employeeData]
+                    });
+                }
+            });
+
+            outputData.children.push(businessUnitData);
         });
+        JSON.stringify(outputData, null, 4);
 
-        return hierarchy;
-      }
+        const margin = { top: 20, right: 90, bottom: 30, left: 90 };
+        const width = 960;
+        const height = 450;
 
-      const dimensionsToSelect = ["hrms_business_unit.id", "employee.direct_manager_id"];
-      const outputData = buildHierarchy(data, dimensionsToSelect);
+        const duration = 750;
+        let i = 0;
+        const tree = d3.tree().size([height, width]);
 
-      const margin = {top: 20, right: 120, bottom: 20, left: 120},
-          canvas_height = 700,
-          canvas_width = 960
-          tree_width = canvas_width - margin.right - margin.left,
-          tree_height = canvas_height - margin.top - margin.bottom,
-          tree_level_depth = 180;
+        const svg = d3.select(this.container).append("svg")
+                    .attr("width", width + margin.right + margin.left)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      data = OutputData;
-
-      let i = 0;
-      const duration = 750;
-      const tree = d3.tree().size([tree_height, tree_width]);
-
-      const svg = d3.select(this.container).append("svg")
-                  .attr("width", canvas_width)
-                  .attr("height", canvas_height)
-                  .append("g")
-                  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-      d3.json(data, function(error, tree_data) {
-        root = tree_data;
-        root.x0 = tree_height / 2;
-        root.y0 = 0;
+        const root = d3.hierarchy(outputData);
+        root.x0 = height / 2;
+        root.y0 = width / 2;
+        root.children.forEach(collapse);
 
         function collapse(d) {
           if (d.children) {
             d._children = d.children;
-            d._children.forEach(collapse);
+            d.children = null;
+          } else {
+            d.children = d._children;
             d.children = null;
           }
         }
 
-        root.children.forEach(collapse);
         update(root);
-      });
 
-      d3.select(self.frameElement).style("height", "800px");
+        function update(source) {
+          const treeData = tree(root);
+          const nodes = treeData.descendants();
+          const links = treeData.descendants().slice(1);
 
-      function update(source) {
+          nodes.forEach(d => {
+              d.y = d.depth * 200;
+              d.x0 = d.x;
+              d.y0 = d.y;
+          });
 
-        // Compute the new tree layout.
-        var nodes = tree.nodes(root),
-            links = tree.links(nodes);
+          const node = svg.selectAll("g.node")
+            .outputData(nodes, d => d.id || (d.id = ++i));
 
-        // Normalize for fixed-depth.
-        nodes.forEach(function(d) { d.y = d.depth * tree_level_depth; });
-
-        // Set unique ID for each node
-        var node = svg.selectAll("g.node")
-            .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
-        // Enter any new nodes at the parent's previous position.
-        var new_nodes = node.enter().append("g")
+          const nodeEnter = node.enter().append("g")
             .attr("class", "node")
-            .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-            .on("click", click);
+            .attr("transform", d => `translate(${source.y0},${source.x0})`)
+            .on("click", nodeclick)
+            .attr("cursor", "pointer")
+            .attr("pointer-events", "all");
 
-        new_nodes.append("circle")
+          nodeEnter.attr("class", "node")
             .attr("r", 1e-6)
-            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+            .attr("fill", "black");
 
-        new_nodes.append("text")
-            .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-            .attr("dy", ".35em")
-            .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-            .text(function(d) { return d.name; })
-            .style("fill-opacity", 1e-6);
+          nodeEnter.append("circle")
+            .attr("fill", "black");
 
-        // Transition nodes to their new position.
-        var moved_node = node.transition().duration(duration)
-            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
-        moved_node.select("circle")
-            .attr("r", 4.5)
-            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-        moved_node.select("text")
-            .style("fill-opacity", 1);
+          nodeEnter.append("text")
+          .attr("fill", "black")
+          .attr("dy", d => d.parent ? "1em" : "-1em")
+          .attr("text-anchor", d => d.parent ? "end" : "start")
+          .attr("x", d => d.parent ? -10 : 10)
+          .text(d => d.outputData.name);
 
+          const nodeUpdate = node.merge(nodeEnter).transition().duration(duration)
+            .attr("transform", d => `translate(${d.y},${d.x})`);
 
-        // Transition exiting nodes to the parent's new position.
-        var hidden_nodes = node.exit().transition().duration(duration)
-            .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+          nodeUpdate.select("circle")
+            .attr("r", 5);
+
+          nodeUpdate.select("text")
+            .attr("fill-opacity", 1);
+
+          const nodeExit = node.exit().transition().duration(duration)
+            .attr("transform", d => `translate(${source.y},${source.x})`)
             .remove();
-        hidden_nodes.select("circle")
-            .attr("r", 1e-6);
-        hidden_nodes.select("text")
-            .style("fill-opacity", 1e-6);
 
+          nodeExit.select("circle").attr("opacity", 1e-6);
 
-        // Update the links…
-        var link = svg.selectAll("path.link")
-            .data(links, function(d) { return d.target.id; });
+          const link = svg.selectAll("path.link").outputData(links, d => d.id);
 
-
-        // Enter any new links at the parent's previous position.
-        link.enter().insert("path", "g")
+          const linkEnter = link.enter().insert("path", "g")
             .attr("class", "link")
-            .attr("d", function(d) {
-              var o = {x: source.x0, y: source.y0};
-              return diagonal({source: o, target: o});
+            .attr("d", d => {
+              const o = { x: source.x0, y: source.y0 };
+              return diagonal(o, o);
             })
-            .append("svg:title")
-                .text(function(d, i) { return d.target.edge_name; });
+            .attr("fill", "none")
+            .attr("stroke", "#ccc")
+            .attr("stroke-width", 2);
 
+          const linkUpdate = linkEnter.merge(link);
 
-
-        //Transition links to their new position.
-        link.transition().duration(duration)
-            .attr("d", diagonal);
-
-        // Transition exiting nodes to the parent's new position.
-        link.exit().transition().duration(duration)
+          linkUpdate.transition()
+            .duration(duration)
             .attr("d", function(d) {
-              var o = {x: source.x, y: source.y};
-              return diagonal({source: o, target: o});
-            })
-            .remove();
+              return diagonal(d, d.parent);
+            });
 
+          function diagonal(s, d) {
+            const path = `M ${s.y} ${s.x}
+                    C ${(s.y + d.y) / 2} ${s.x},
+                      ${(s.y + d.y) / 2} ${d.x},
+                      ${d.y} ${d.x}`;
 
-        // Stash the old positions for transition.
-        nodes.forEach(function(d) {
-          d.x0 = d.x;
-          d.y0 = d.y;
-        });
-      }
+            return path;
+          }
 
-      // Toggle children on click.
-      function click(d) {
-        if (d.children) {
-          d._children = d.children;
-          d.children = null;
-        } else {
-          d.children = d._children;
-          d._children = null;
+          function nodeclick(d) {
+            if (d.children) {
+              d._children = d.children;
+              d.children = null;
+            } else {
+              d.children = d._children;
+              d._children = null;
+            }
+            update(d);
+          }
         }
-        update(d);
-      }
 
       doneRendering()
   }
