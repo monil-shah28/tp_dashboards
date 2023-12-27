@@ -93,15 +93,15 @@ const visObject = {
     root.x0 = height / 2;
     root.y0 = width / 2;
 
-    root.children.forEach(collapse);
+    # root.children.forEach(collapse);
 
-    function collapse(d) {
-      if (d.children) {
-        d._children = d.children;
-        d._children.forEach(collapse);
-        d.children = null;
-      }
-    }
+    # function collapse(d) {
+    #   if (d.children) {
+    #     d._children = d.children;
+    #     d._children.forEach(collapse);
+    #     d.children = null;
+    #   }
+    # }
 
     update(root);
 
