@@ -5,27 +5,14 @@ const visObject = {
     this.container.style.height = "100%";
   },
 
-  updateAsync: function (
-    data,
-    element,
-    config,
-    queryResponse,
-    details,
-    doneRendering
-  ) {
+  updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
     this.container.innerHTML = "";
     const outputData = {
       name: "root",
       children: [],
     };
 
-    const input_data = [
-      ...new Set(
-        data.map(
-          (item) => item[queryResponse.fields.dimension_like[0].name].value
-        )
-      ),
-    ];
+    const input_data = [...new Set(data.map((item) => item[queryResponse.fields.dimension_like[0].name].value)),];
 
     input_data.forEach((dataId) => {
       const input_unit_data = {
@@ -33,10 +20,7 @@ const visObject = {
         children: [],
       };
 
-      const dimensions = data.filter(
-        (item) =>
-          item[queryResponse.fields.dimension_like[0].name].value === dataId
-      );
+      const dimensions = data.filter((item) => item[queryResponse.fields.dimension_like[0].name].value === dataId);
 
       dimensions.forEach((main) => {
         const dimensions_data = {
@@ -48,7 +32,7 @@ const visObject = {
         for (let i = 1; i < queryResponse.fields.dimension_like.length; i++) {
           const fieldName = queryResponse.fields.dimension_like[i].name;
           dimensions_data.children.push({
-            name: `${fieldName}: ${main[fieldName].value}`,
+            name: main[fieldName].value,
           });
         }
 
@@ -58,11 +42,11 @@ const visObject = {
         );
 
         if (mainNode) {
-          mainNode.children.push(dimensions_data);
+          mainNode.children.push(...dimensions_data.children);
         } else {
           const mainNodeData = {
             name: mainId,
-            children: [dimensions_data],
+            children: [...dimensions_data.children],
           };
           input_unit_data.children.push(mainNodeData);
         }
@@ -74,12 +58,12 @@ const visObject = {
     data = outputData;
 
     const margin = { top: 20, right: 90, bottom: 30, left: 90 };
-    const width = 960;
-    const height = 450;
+    const width = 1500;
+    const height = 1500;
 
     const duration = 750;
     let i = 0;
-    const tree = d3.tree().size([height, width]);
+    const tree = d3.tree().size([width, height]);
 
     const svg = d3
       .select(this.container)
@@ -91,17 +75,7 @@ const visObject = {
 
     const root = d3.hierarchy(data);
     root.x0 = height / 2;
-    root.y0 = width / 2;
-
-    root.children.forEach(collapse);
-
-    function collapse(d) {
-      if (d.children) {
-        d._children = d.children;
-        d._children.forEach(collapse);
-        d.children = null;
-      }
-    }
+    root.y0 = 0;
 
     update(root);
 
@@ -129,16 +103,11 @@ const visObject = {
       const nodes = treeData.descendants();
       const links = treeData.descendants().slice(1);
 
-      nodes.forEach((d) => {
-        d.y = d.depth * 180;
-      });
-
       const node = svg
         .selectAll("g.node")
         .data(nodes, (d) => d.id || (d.id = ++i));
 
-      const nodeEnter = node
-        .enter()
+      const nodeEnter = node.enter()
         .append("g")
         .attr("class", "node")
         .attr("transform", (d) => `translate(${source.y0},${source.x0})`)
@@ -148,10 +117,9 @@ const visObject = {
 
       nodeEnter.append("circle").attr("r", 1e-6).attr("fill", "black");
 
-      nodeEnter
-        .append("text")
+      nodeEnter.append("text")
         .attr("fill", "black")
-        .attr("dy", (d) => (d.parent ? "1em" : "-1em"))
+        .attr("dy", "0.31em")
         .attr("text-anchor", (d) => (d.parent ? "end" : "start"))
         .attr("x", (d) => (d.parent ? -10 : 10))
         .text((d) => d.data.name);
@@ -166,8 +134,7 @@ const visObject = {
 
       nodeUpdate.select("text").attr("fill-opacity", 1);
 
-      const nodeExit = node
-        .exit()
+      const nodeExit = node.exit()
         .transition()
         .duration(duration)
         .attr("transform", (d) => `translate(${source.y},${source.x})`)
@@ -177,8 +144,7 @@ const visObject = {
 
       const link = svg.selectAll("path.link").data(links, (d) => d.id);
 
-      const linkEnter = link
-        .enter()
+      const linkEnter = link.enter()
         .insert("path", "g")
         .attr("class", "link")
         .attr("d", (d) => {
@@ -191,8 +157,7 @@ const visObject = {
 
       const linkUpdate = linkEnter.merge(link);
 
-      linkUpdate
-        .transition()
+      linkUpdate.transition()
         .duration(duration)
         .attr("d", function (d) {
           return diagonal(d, d.parent);
@@ -215,11 +180,12 @@ const visObject = {
           d.children = d._children;
           d._children = null;
         }
-        update(root);
+        update(d);
       }
     }
 
-    expandAll()
+    expandAll();
+    collapseAll();
 
     doneRendering();
   },
