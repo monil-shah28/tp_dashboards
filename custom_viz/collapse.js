@@ -9,6 +9,7 @@ const visObject = {
   updateAsync: function(data, element, config, queryResponse, details, doneRendering){
 
         this.container.innerHTML = '';
+
         const outputData = {
             name: "root",
             children: []
@@ -27,10 +28,18 @@ const visObject = {
             dimensions.forEach(main => {
                 const dimensions_data = {
                     name: main[queryResponse.fields.dimension_like[1].name].value,
-                    children: [{ name: main[queryResponse.fields.dimension_like[2].name] }]
+                    children: []
                 };
 
-                const mainId = main[queryResponse.fields.dimension_like[3].name].value;
+                // Iterate over all properties except the first two (assumed to be IDs)
+                for (let i = 2; i < queryResponse.fields.dimension_like.length; i++) {
+                    const fieldName = queryResponse.fields.dimension_like[i].name;
+                    dimensions_data.children.push({
+                        name: `${fieldName}: ${main[fieldName].value}`
+                    });
+                }
+
+                const mainId = main[queryResponse.fields.dimension_like[2].name].value; // Assuming the ID is at index 2
                 const mainNode = input_unit_data.children.find(node => node.name === mainId);
 
                 if (mainNode) {
@@ -45,6 +54,10 @@ const visObject = {
 
             outputData.children.push(input_unit_data);
         });
+
+        // Now outputData is in the desired format
+        console.log(JSON.stringify(outputData, null, 2));
+
 
         data = outputData;
 
