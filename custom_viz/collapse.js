@@ -36,7 +36,7 @@ const visObject = {
           });
         }
 
-        const mainId = main[queryResponse.fields.dimension_like[1].name].value; // Assuming the ID is at index 2
+        const mainId = main[queryResponse.fields.dimension_like[2].name].value; // Assuming the ID is at index 2
         const mainNode = input_unit_data.children.find(
           (node) => node.name === mainId
         );
