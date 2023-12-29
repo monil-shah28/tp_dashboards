@@ -101,7 +101,7 @@ view: employee {
   }
   measure: count {
     type: count
-    drill_fields: [detail*]
+    drill_fields: [employee_id, employee_name]
     link: {
       label: "Look this event in chronicle"
       url: "https://www.google.com/"
@@ -111,11 +111,7 @@ view: employee {
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
-  employee_id,
-  company_name,
-  employee_name,
-  role.name,
-  designation.designation_name
+
   ]
   }
 

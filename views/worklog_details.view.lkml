@@ -72,6 +72,6 @@ view: worklog_details {
 
   measure: count {
     type: count
-    # drill_fields: [id, worklog.id]
+    drill_fields: [id, worklog.id,employee.employee_name]
   }
 }
