@@ -24,38 +24,37 @@ const visObject = {
 
       dimensions.forEach((main) => {
         const dimensions_data = {
-          name: main[queryResponse.fields.dimension_like[0].name].value,
-          children: [],
+          name: main[queryResponse.fields.dimension_like[1].name].value,
+          children: [
+            {
+              name: main[queryResponse.fields.dimension_like[2].name].value,
+              children: [
+                {
+                  name: main[queryResponse.fields.dimension_like[3].name].value
+                }
+              ]
+            }
+          ],
         };
 
-        // Iterate over all properties except the first two (assumed to be IDs)
-        for (let i = 1; i < queryResponse.fields.dimension_like.length; i++) {
-          const fieldName = queryResponse.fields.dimension_like[i].name;
-          dimensions_data.children.push({
-            name: main[fieldName].value,
-          });
-        }
-
-        const mainId = main[queryResponse.fields.dimension_like[2].name].value; // Assuming the ID is at index 2
+        const mainId = main[queryResponse.fields.dimension_like[1].name].value; // Assuming the ID is at index 2
         const mainNode = input_unit_data.children.find(
           (node) => node.name === mainId
         );
 
-        if (mainNode) {
-          mainNode.children.push(...dimensions_data.children);
-        } else {
           const mainNodeData = {
             name: mainId,
             children: [...dimensions_data.children],
           };
           input_unit_data.children.push(mainNodeData);
-        }
       });
 
       outputData.children.push(input_unit_data);
     });
 
     data = outputData;
+    console.log("After Data: ", data);
+
 
     const margin = { top: 20, right: 90, bottom: 30, left: 90 };
     const width = 1500;
@@ -91,6 +90,16 @@ const visObject = {
       expand(root);
       update(root);
     }
+
+    function collapse(d) {
+        if (d.children) {
+           d._children = d.children;
+           d._children = null;
+        } else {
+           d.children = d._children;
+           d.children = null;
+          }
+        }
 
     function collapseAll() {
       root.children.forEach(collapse);
