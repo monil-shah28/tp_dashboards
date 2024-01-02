@@ -42,19 +42,17 @@ const visObject = {
           (node) => node.name === mainId
         );
 
-          const mainNodeData = {
-            name: mainId,
-            children: [...dimensions_data.children],
-          };
-          input_unit_data.children.push(mainNodeData);
+        const mainNodeData = {
+          name: mainId,
+          children: [...dimensions_data.children],
+        };
+        input_unit_data.children.push(mainNodeData);
       });
 
       outputData.children.push(input_unit_data);
     });
 
     data = outputData;
-    console.log("After Data: ", data);
-
 
     const margin = { top: 20, right: 90, bottom: 30, left: 90 };
     const width = 1500;
@@ -120,7 +118,7 @@ const visObject = {
         .append("g")
         .attr("class", "node")
         .attr("transform", (d) => `translate(${source.y0},${source.x0})`)
-        .on("click", expand)
+        .on("click", nodeclick)
         .attr("cursor", "pointer")
         .attr("pointer-events", "all");
 
