@@ -11,7 +11,9 @@ const visObject = {
     this.container.style.margin = "6px";
     this.container.style.padding = "16px 0 12px";
     this.container.style.display = "flex";
-    this.container.style.justifyContent = "space-between";
+    this.container.style.justifyContent = "space-between"
+    this.container.style.width = "200px";
+    this.container.style.height = "10px";
   },
 
   updateAsync: function (
@@ -22,6 +24,7 @@ const visObject = {
     details,
     doneRendering
   ) {
+     this.container.innerHTML=``;
     queryResponse?.fields?.measures.forEach((key, index) => {
       const count = data[0] ? data[0][key.name]?.value ?? 0 : 0;
 
