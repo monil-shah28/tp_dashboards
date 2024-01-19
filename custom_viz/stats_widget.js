@@ -33,19 +33,19 @@ const visObject = {
 
    this.container.innerHTML = `<div style="display: flex;align-items: baseline; justify-content: space-between;">
   <div style="display: flex; align-items: baseline; justify-content: left;">
-    <div style="height: 25px;
-    width: 25px;
+    <div style="height: 15px;
+    width: 15px;
     background-color: blue;
     border-radius: 50%;
     display: inline-block;"></div>
     <div
     style="
-    font-size: 56px;
+    font-size: 30px;
     letter-spacing: -3px;
     margin-bottom: 0;
     margin-right: 4px;
     font-weight: 100;
-    line-height: 1.1em;
+    line-height: 30px;
     color: #333;
     display: flex;
     align-items: flex-end;
@@ -54,8 +54,8 @@ const visObject = {
     ${count}
     </div
     style = "
-    font-size: 56px;
-    line-height: 8px;
+    font-size: 30px;
+    line-height: 30px;
     margin-bottom: 8px;
     color: black;
     font-weight: 900;
