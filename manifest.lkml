@@ -8,8 +8,8 @@ project_name: "tp"
 # }
 
 visualization: {
-  id: "collapse"
-  label: "Collapse"
+  id: "stats_widget"
+  label: "Stats Widget"
   file: "custom_viz/collapse.js"
   dependencies: [
     "https://code.jquery.com/jquery-2.2.4.min.js",
