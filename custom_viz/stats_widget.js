@@ -10,6 +10,8 @@ const visObject = {
     this.container.style.color = "#333";
     this.container.style.margin = "6px";
     this.container.style.padding = "16px 0 12px";
+    this.container.style.display = "flex";
+    this.container.style.justifyContent = "space-between";
   },
 
   updateAsync: function (
@@ -20,60 +22,50 @@ const visObject = {
     details,
     doneRendering
   ) {
-      queryResponse?.fields?.measures.forEach((key,index) => {
-        const count = data[0]
-      ? data[0][key.name]?.value ?? 0 : 0;
-    let display_label = key?.name ?? "";
+    queryResponse?.fields?.measures.forEach((key, index) => {
+      const count = data[0] ? data[0][key.name]?.value ?? 0 : 0;
 
-   this.container.innerHTML = `<div
-  style="display: flex; align-items: baseline; justify-content: space-between"
->
-  <div style="display: flex; align-items: baseline; justify-content: left">
-    <div
+      let display_label = key?.name ?? "";
+
+      const childEle = this.container.appendChild(
+        document.createElement("div")
+      );
+      childEle.style.fontFamily = "Roboto,sans-serif";
+      childEle.style.display = "flex";
+      childEle.style.alignItems = "center";
+
+      childEle.innerHTML = `
+      <div
       style="
         height: 15px;
         width: 15px;
         background-color: blue;
         border-radius: 50%;
-        display: inline-block;
-        justify-content: space-between;
       "
     ></div>
-
     <div
       style="
-        font-size: 30px;
-        margin-bottom: 0;
-        margin-right: 4px;
+        font-size: 24px;
+        margin: 0 4px 0 4px;
         font-weight: 100;
         line-height: 30px;
         color: black;
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
       "
     >
       ${count}
     </div>
-
     <div
       style="
-        font-size: 30px;
-        margin-bottom: 0;
+        font-size: 20px;
         margin-right: 4px;
         line-height: 30px;
         color: black;
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
       "
     >
       ${display_label}
     </div>
-  </div>
-</div>
-`;
-});
+  `;
+    });
     doneRendering();
   },
 };
