@@ -20,12 +20,6 @@ const visObject = {
     details,
     doneRendering
   ) {
-    # console.log("*************************************");
-    # console.log(data);
-    # console.log("*********************************************");
-    # console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-    # console.log(queryResponse);
-    # console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
       data.map((data,index) => {
         console.log(index)
     const count = data[index]
