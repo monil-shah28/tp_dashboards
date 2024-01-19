@@ -20,11 +20,10 @@ const visObject = {
     details,
     doneRendering
   ) {
-      data[0].forEach((key,index) =>{
-    const count = data[0]
-      ? data[0][queryResponse?.fields?.measures[index]?.name]?.value ?? 0
-      : 0;
-    let display_label = queryResponse?.fields?.measures[index]?.name ?? "";
+      queryResponse?.fields?.measures.forEach((key,index) => {
+        const count = data[0]
+      ? data[0][key.name]?.value ?? 0 : 0;
+    let display_label = key?.name ?? "";
 
    this.container.innerHTML = `<div
   style="display: flex; align-items: baseline; justify-content: space-between"
@@ -44,7 +43,6 @@ const visObject = {
     <div
       style="
         font-size: 30px;
-        letter-spacing: -3px;
         margin-bottom: 0;
         margin-right: 4px;
         font-weight: 100;
@@ -61,7 +59,6 @@ const visObject = {
     <div
       style="
         font-size: 30px;
-        letter-spacing: -3px;
         margin-bottom: 0;
         margin-right: 4px;
         line-height: 30px;
