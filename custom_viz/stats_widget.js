@@ -32,7 +32,7 @@ const visObject = {
     let display_label = queryResponse?.fields?.measures[0]?.name ?? "";
     }
 
-    this.container.innerHTML = `<div style="display: flex;align-items: baseline; justify-content: space-between;">
+    this.container.innerHTML = `
   <div style="display: flex; align-items: baseline; justify-content: left;">
     <div style="height: 25px;
     width: 25px;
@@ -63,8 +63,7 @@ const visObject = {
     "
     >
     ${display_label}
-  </div>
-</div>`;
+  </div>`;
 
     doneRendering();
   },
