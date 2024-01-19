@@ -30,7 +30,6 @@ const visObject = {
       ? data[0][queryResponse?.fields?.measures[0]?.name]?.value ?? 0
       : 0;
     let display_label = queryResponse?.fields?.measures[0]?.name ?? "";
-    }
 
    this.container.innerHTML = `<div style="display: flex;align-items: baseline; justify-content: space-between;">
   <div style="display: flex; align-items: baseline; justify-content: left;">
