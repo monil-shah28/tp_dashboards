@@ -20,9 +20,7 @@ const visObject = {
     details,
     doneRendering
   ) {
-    console.log(data.length);
-    console.log(data[0].length);
-      data[0].map((data,index) => {
+      data[0].forEach((key,index) =>{
     const count = data[0]
       ? data[0][queryResponse?.fields?.measures[index]?.name]?.value ?? 0
       : 0;
