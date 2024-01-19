@@ -21,11 +21,10 @@ const visObject = {
     doneRendering
   ) {
     console.log(data.length);
-    console.log(data);
-      data.map((data,index) => {
-        console.log(index)
-    const count = data[index]
-      ? data[index][queryResponse?.fields?.measures[index]?.name]?.value ?? 0
+    console.log(data[0].length);
+      data[0].map((data,index) => {
+    const count = data[0]
+      ? data[0][queryResponse?.fields?.measures[index]?.name]?.value ?? 0
       : 0;
     let display_label = queryResponse?.fields?.measures[index]?.name ?? "";
 
