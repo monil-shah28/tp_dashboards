@@ -20,6 +20,12 @@ const visObject = {
     details,
     doneRendering
   ) {
+    console.log("*************************************");
+    console.log(data);
+    console.log("*********************************************");
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+    console.log(queryResponse);
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
     const count = data[0]
       ? data[0][queryResponse?.fields?.measures[0]?.name]?.value ?? 0
       : 0;
