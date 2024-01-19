@@ -12,8 +12,6 @@ const visObject = {
     this.container.style.padding = "16px 0 12px";
     this.container.style.display = "flex";
     this.container.style.justifyContent = "space-between"
-    this.container.style.width = "200px";
-    this.container.style.height = "10px";
   },
 
   updateAsync: function (
