@@ -23,6 +23,7 @@ const visObject = {
     doneRendering
   ) {
      this.container.innerHTML=``;
+     var colorArray = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6']
     queryResponse?.fields?.measures.forEach((key, index) => {
       const count = data[0] ? data[0][key.name]?.value ?? 0 : 0;
 
@@ -40,7 +41,7 @@ const visObject = {
       style="
         height: 15px;
         width: 15px;
-        background-color: blue;
+        background-color: ${colorArray[index]};
         border-radius: 50%;
       "
     ></div>
