@@ -7,11 +7,14 @@ const visObject = {
     this.container = element.appendChild(document.createElement("div"));
     this.container.setAttribute("id", "count-container");
     this.container.style.fontFamily = "Roboto,sans-serif";
-    this.container.style.color = "#333";
-    this.container.style.margin = "6px";
-    this.container.style.padding = "16px 0 12px";
-    this.container.style.display = "flex";
-    this.container.style.justifyContent = "space-between"
+    const title = this.container.appendChild(document.createElement("div"));
+    title.innerHTML = `<p>Title</p>`;
+    this.content = this.container.appendChild(document.createElement("div"));
+    this.content.style.color = "#333";
+    this.content.style.margin = "6px";
+    this.content.style.padding = "16px 0 12px";
+    this.content.style.display = "flex";
+    this.content.style.justifyContent = "space-between";
   },
 
   updateAsync: function (
@@ -22,14 +25,14 @@ const visObject = {
     details,
     doneRendering
   ) {
-     this.container.innerHTML=``;
+     this.content.innerHTML=``;
      var colorArray = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6']
     queryResponse?.fields?.measures.forEach((key, index) => {
       const count = data[0] ? data[0][key.name]?.value ?? 0 : 0;
 
       let display_label = key?.name ?? "";
 
-      const childEle = this.container.appendChild(
+      const childEle = this.content.appendChild(
         document.createElement("div")
       );
       childEle.style.fontFamily = "Roboto,sans-serif";
