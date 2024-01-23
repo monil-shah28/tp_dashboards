@@ -8,7 +8,7 @@ const visObject = {
     this.container.setAttribute("id", "count-container");
     this.container.style.fontFamily = "Roboto,sans-serif";
     const title = this.container.appendChild(document.createElement("div"));
-    title.innerHTML = `<p>Title</p>`;
+    title.innerHTML = `<p>Total Appomni Insights Resolved</p>`;
     this.content = this.container.appendChild(document.createElement("div"));
     this.content.style.color = "#333";
     this.content.style.margin = "6px";
