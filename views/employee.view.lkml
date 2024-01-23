@@ -107,6 +107,25 @@ view: employee {
       url: "https://www.google.com/"
     }
   }
+   filter: time_poc {
+
+    type: string
+  }
+
+  dimension: time_poc_dimension {
+    type: date
+    sql: (
+          DATE(
+                CASE
+                  WHEN {% parameter time_poc %} = '15 days' THEN  now() - interval '15 day'
+                  WHEN {% parameter time_poc %} = '30 days' THEN  now() - interval '30 day'
+                  ELSE NULL
+                END
+              )
+          );;
+    convert_tz: no
+  }
+
 
   # ----- Sets of fields for drilling ------
   set: detail {
