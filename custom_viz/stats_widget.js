@@ -30,7 +30,7 @@ const visObject = {
     queryResponse?.fields?.measures.forEach((key, index) => {
       const count = data[0] ? data[0][key.name]?.value ?? 0 : 0;
 
-      let display_label = key?.name ?? "";
+      let display_label = key?.label ?? "";
 
       const childEle = this.content.appendChild(
         document.createElement("div")
