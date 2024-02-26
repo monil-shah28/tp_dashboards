@@ -6,7 +6,8 @@ include: "/dashboards/*.dashboard"
 
 explore: poc {
   from: employee
-  sql_always_where: ${poc.date_of_joining_date} < ${poc.time_poc_dimension} ;;
+  # sql_always_where: CAST(split_part('{{_user_attributes['org_key']}}', '-', 1) AS INTEGER)  = ${poc.id}
+  # ;;
 }
 explore: poc1 {
   from: employee

@@ -107,31 +107,81 @@ view: employee {
       url: "https://www.google.com/"
     }
   }
-   filter: time_poc {
+  # parameter: time_poc {
+  #   type: string
+  #   default_value: "Last7Days"
+  #   allowed_value: {
+  #     label: "Today"
+  #     value: "Today"
+  #   }
+  #   allowed_value: {
+  #     label: "Yesterday"
+  #     value: "Yesterday"
+  #   }
+  #   allowed_value: {
+  #     label: "Last 7 days"
+  #     value: "Last7days"
+  #   }
+  #   allowed_value: {
+  #     label: "Last 30 days"
+  #     value: "Last30days"
+  #   }
+  #   allowed_value: {
+  #     label: "Last 90 days"
+  #     value: "Last90days"
+  #   }
+  # }
+  # filter: time_poc {
+  #   type: date
+  # }
+  # dimension: time_poc_dimension {
+  #   type: date
+  #   sql: (
+  #         DATE(
+  #               CASE
+  #                 WHEN  {%parameter time_poc%} = 'Last30days' THEN  now() - interval '30 day'
+  #                 WHEN {%parameter time_poc%} = 'Last90days' THEN  now() - interval '90 day'
+  #                 ELSE NULL
+  #               END
+  #             )
+  #         );;
+  #   convert_tz: no
+  # }
 
-    type: string
-  }
-
-  dimension: time_poc_dimension {
-    type: date
-    sql: (
-          DATE(
-                CASE
-                  WHEN {% parameter time_poc %} = '15 days' THEN  now() - interval '15 day'
-                  WHEN {% parameter time_poc %} = '30 days' THEN  now() - interval '30 day'
-                  ELSE NULL
-                END
-              )
-          );;
-    convert_tz: no
-  }
+  # dimension: ok {
+  #   sql:  {%parameter time_poc%} ;;
+  # }
+  # dimension: dynamic_timeframe {
+  #   sql:  {% if ${ok} == "Last30days" %} ${date_of_joining_date}
+  #     {% elsif ${ok} == "Last90days" %} ${date_of_joining_month}
+  #     {% else %} ${date_of_joining_month}
+  #     {% endif %} ;;
+  # }
 
 
+    # dimension: dynamic_timeframe {
+  #   type: time
+  #   sql: CASE
+  #         WHEN {% parameter time_poc %} = 'Today' THEN ${date_of_joining_date}
+  #         WHEN {% parameter time_poc %} = 'Last7days' THEN ${date_of_joining_month} :: DATE
+  #         WHEN {% parameter time_poc %} = 'Last90days' THEN ${date_of_joining_month} ::DATE
+  #         ELSE ${date_of_joining_month} :: DATE
+  #       END ;;
+  # }
+
+  # dimension: dynamic_timeframe {
+  #   type: string
+  #   sql: CASE
+  #                 WHEN  parameter_.time_poc  = '15days' THEN  CAST(${date_of_joining_date} AS VARCHAR(10))
+  #                 WHEN parameter_.time_poc = '30days' THEN CAST(${date_of_joining_month} AS VARCHAR(10))
+  #                 ELSE CAST(${date_of_joining_date} AS VARCHAR(10))
+  #               END ;;
+  # }
   # ----- Sets of fields for drilling ------
-  set: detail {
-    fields: [
+  # set: detail {
+  #   fields: [
 
-  ]
-  }
+  # ]
+  # }
 
 }

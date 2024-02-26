@@ -11,19 +11,36 @@
     model: shpoc
     explore: poc
     type: table
-    fields: [poc.email_id, poc.id, poc.time_poc_dimension]
-    sorts: [poc.time_poc_dimension desc]
-    limit: 500
+    fields: [poc.email_id, poc.id, count_of_id]
+    sorts: [count_of_id desc 0]
+    limit: 5
     column_limit: 50
-    listen:
-      Time Poc: poc.time_poc
-      Username: poc.username
+    dynamic_fields:
+    - measure: count_of_id
+      based_on: poc.id
+      expression: ''
+      label: Count of ID
+      type: count_distinct
+      _kind_hint: measure
+      _type_hint: number
+    show_view_names: false
+    show_row_numbers: true
+    truncate_column_names: false
+    hide_totals: false
+    hide_row_totals: false
+    table_theme: editable
+    limit_displayed_rows: false
+    enable_conditional_formatting: false
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    defaults_version: 1
+    listen: {}
     row: 3
     col: 0
     width: 10
     height: 7
   - type: button
-    name: button_89
+    name: button_53
     rich_content_json: '{"text":"High","description":"","newTab":false,"alignment":"center","size":"medium","style":"FILLED","color":"#E52592","href":"https://40f7f28e-b4d6-445a-963a-9529a73a3172.looker.app/embed/dashboards/22"}'
     row: 0
     col: 21
@@ -94,40 +111,8 @@
     conditional_formatting_include_nulls: false
     defaults_version: 0
     title_hidden: true
-    listen:
-      Username: employee.username
+    listen: {}
     row: 1
     col: 0
     width: 24
     height: 2
-  filters:
-  - name: Time Poc
-    title: Time Poc
-    type: field_filter
-    default_value: 15 days
-    allow_multiple_values: true
-    required: false
-    ui_config:
-      type: dropdown_menu
-      display: inline
-      options:
-      - 15 days
-      - 30 days
-    model: shpoc
-    explore: poc
-    listens_to_filters: []
-    field: poc.time_poc
-  - name: Username
-    title: Username
-    type: field_filter
-    default_value: ''
-    allow_multiple_values: true
-    required: false
-    ui_config:
-      type: advanced
-      display: popover
-      options: []
-    model: tp
-    explore: employee
-    listens_to_filters: []
-    field: employee.username
