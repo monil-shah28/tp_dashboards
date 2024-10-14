@@ -1,4 +1,4 @@
-connection: "tp"
+connection: "team_planner"
 
 # Include all views which is in databse
 include: "/views/*.view.lkml"

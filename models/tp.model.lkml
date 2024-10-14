@@ -1,4 +1,4 @@
-connection: "tp"
+connection: "team_planner"
 
 # include all the views
 include: "/views/**/*.view.lkml"
